@@ -1,5 +1,6 @@
 package ru.practicum.ewm.dto.stats;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EndpointHitDto {
-    private Long id;
+public class EndpointHit {
     @NotBlank(message = "Идентификатор сервиса не может быть пустым.")
     private String app;
     @NotBlank(message = "URI не может быть пустым.")
@@ -20,5 +20,6 @@ public class EndpointHitDto {
     @NotBlank(message = "IP-адрес пользователя не может быть пустым.")
     private String ip;
     @NotNull(message = "Дата и время запроса не может быть пустым.")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }

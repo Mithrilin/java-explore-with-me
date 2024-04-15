@@ -14,13 +14,13 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "statistics")
+@Table(name = "hit_statistics")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-public class EndpointHit {
+public class HitStats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
