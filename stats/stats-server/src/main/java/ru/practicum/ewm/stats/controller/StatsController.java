@@ -30,7 +30,7 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public List<ViewStats> getVievStatsList(@RequestParam
+    public List<ViewStats> getViewStatsList(@RequestParam
                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                             LocalDateTime start,
                                             @RequestParam
@@ -38,6 +38,10 @@ public class StatsController {
                                             LocalDateTime end,
                                             @RequestParam (required = false) List<String> uris,
                                             @RequestParam (defaultValue = "false") Boolean unique) {
-        return null;
+        if (uris == null) {
+            return statsService.getViewStatsListWithoutUris(start, end, unique);
+        } else {
+            return statsService.getViewStatsListWithUris(start, end, uris, unique);
+        }
     }
 }
