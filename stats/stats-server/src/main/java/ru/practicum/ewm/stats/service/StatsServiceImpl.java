@@ -33,32 +33,33 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStats> getViewStatsListWithoutUris(LocalDateTime start, LocalDateTime end, Boolean unique) {
-//        List<HitStats> hitStatsList;
-//        if (unique) {
-//            hitStatsList = hitStatsRepository.findDistinctByUriAndApiAndTimestampBetween(start, end);
-//        } else {
-//            hitStatsList = hitStatsRepository.findByTimestampBetween(start, end);
-//        }
-        List<HitStats> hitStatsList = hitStatsRepository.findByTimestampBetween(start, end);
-        if (hitStatsList.isEmpty()) {
+        List<ViewStats> viewStatsList;
+        if (unique) {
+            viewStatsList = hitStatsRepository.getViewStatsWithUniqueTrue(start, end);
+        } else {
+            viewStatsList = hitStatsRepository.getViewStatsWithUniqueFalse(start, end);
+        }
+        if (viewStatsList.isEmpty()) {
             log.info("Список со статистикой просмотров для указанных параметров пуст.");
             return new ArrayList<>();
         }
-
-
-//        log.info("со статистикой просмотров размером {} возвращён.", pageRequestParams.getSize());
-        return null;
+        log.info("Список статистики просмотров размером {} возвращён.", viewStatsList.size());
+        return viewStatsList;
     }
 
     @Override
     public List<ViewStats> getViewStatsListWithUris(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<HitStats> hitStatsList = hitStatsRepository.findByUriInAndTimestampBetween(uris, start, end);
-        if (hitStatsList.isEmpty()) {
+        List<ViewStats> viewStatsList;
+        if (unique) {
+            viewStatsList = hitStatsRepository.getViewStatsWithUrisUniqueTrue(uris, start, end);
+        } else {
+            viewStatsList = hitStatsRepository.getViewStatsWithUrisUniqueFalse(uris, start, end);
+        }
+        if (viewStatsList.isEmpty()) {
             log.info("Список со статистикой просмотров для указанных параметров пуст.");
             return new ArrayList<>();
         }
-
-//        log.info("со статистикой просмотров размером {} возвращён.", pageRequestParams.getSize());
-        return null;
+        log.info("Список статистики просмотров размером {} возвращён.", viewStatsList.size());
+        return viewStatsList;
     }
 }
