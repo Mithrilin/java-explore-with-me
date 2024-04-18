@@ -24,7 +24,7 @@ import java.util.Map;
 public class StatsClient {
     private final RestTemplate rest;
 
-    public StatsClient(@Value("${stats-server.url}") String statsServerUrl, RestTemplateBuilder builder) {
+    public StatsClient(@Value("http://localhost:9090") String statsServerUrl, RestTemplateBuilder builder) {
         this.rest = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(statsServerUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
