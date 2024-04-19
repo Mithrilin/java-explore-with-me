@@ -43,7 +43,7 @@ public class StatsServiceImpl implements StatsService {
             log.info("Список со статистикой просмотров для указанных параметров пуст.");
             return new ArrayList<>();
         }
-        log.info("Список статистики просмотров размером {} возвращён.", viewStatsList.size());
+        log.info("Список статистики просмотров с параметром unique = {} размером {} возвращён.", unique, viewStatsList.size());
         return viewStatsList;
     }
 
@@ -59,7 +59,7 @@ public class StatsServiceImpl implements StatsService {
             log.info("Список со статистикой просмотров для указанных параметров пуст.");
             return new ArrayList<>();
         }
-        log.info("Список статистики просмотров размером {} возвращён.", viewStatsList.size());
+        log.info("Список статистики просмотров с параметром unique = {} размером {} возвращён.", unique, viewStatsList.size());
         return viewStatsList;
     }
 }

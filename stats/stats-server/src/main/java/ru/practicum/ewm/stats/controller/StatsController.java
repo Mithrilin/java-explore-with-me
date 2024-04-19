@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewm.dto.exception.NotValidException;
 import ru.practicum.ewm.dto.stats.EndpointHit;
 import ru.practicum.ewm.dto.stats.ViewStats;
 import ru.practicum.ewm.stats.service.StatsService;
@@ -38,6 +39,9 @@ public class StatsController {
                                             LocalDateTime end,
                                             @RequestParam (required = false) List<String> uris,
                                             @RequestParam (defaultValue = "false") Boolean unique) {
+        if (start.isAfter(end)) {
+            throw new NotValidException("Дата начала должна быть раньше даты конца.");
+        }
         if (uris == null) {
             return statsService.getViewStatsListWithoutUris(start, end, unique);
         } else {
