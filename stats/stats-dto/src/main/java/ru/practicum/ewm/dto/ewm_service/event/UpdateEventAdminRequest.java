@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.ewm.dto.ewm_service.event.enums.UpdateEventStates;
-import ru.practicum.ewm.dto.ewm_service.location.Location;
+import ru.practicum.ewm.dto.ewm_service.location.LocationDto;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +21,7 @@ public class UpdateEventAdminRequest {
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    private Location location;
+    private LocationDto location;
     private boolean paid;
     private Integer participantLimit;
     private boolean requestModeration;

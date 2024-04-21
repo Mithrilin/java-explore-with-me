@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import ru.practicum.ewm.dto.ewm_service.location.Location;
+import ru.practicum.ewm.dto.ewm_service.location.LocationDto;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
@@ -29,10 +29,10 @@ public class NewEventDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @NotNull
-    private Location location;
-    private boolean paid = false;
+    private LocationDto location;
+    private Boolean paid = false;
     private Integer participantLimit = 0;
-    private boolean requestModeration = true;
+    private Boolean requestModeration = true;
     @NotBlank(message = "title не может быть пустым.")
     @Length(min = 3, max = 120, message = "Длина name должна быть в диапазоне от 3 до 120 символов.")
     private String title;

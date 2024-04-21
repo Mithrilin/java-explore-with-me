@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.ewm.category.model.Category;
+import ru.practicum.ewm.dto.ewm_service.event.enums.EventLifecycleStates;
+import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +18,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -44,4 +47,22 @@ public class Event {
     @Column(name = "event_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JoinColumn(name = "initiator_id")
+    private User initiator;
+    @OneToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JoinColumn(name = "location_id")
+    private Location location;
+    private Boolean paid;
+    @Column(name = "participant_limit")
+    private Integer participantLimit;
+    @Column(name = "published_on")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime publishedOn;
+    @Column(name = "request_moderation")
+    private Boolean requestModeration;
+    private EventLifecycleStates state;
+    private String title;
 }
