@@ -25,9 +25,4 @@ public class User {
     private Long id;
     private String email;
     private String name;
-
-    public User(String name, String email) {
-        this.email = email;
-        this.name = name;
-    }
 }

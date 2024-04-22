@@ -12,6 +12,8 @@ import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -63,6 +65,7 @@ public class Event {
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation")
     private Boolean requestModeration;
-    private EventLifecycleStates state;
+    @Enumerated(EnumType.STRING)
+    private EventLifecycleStates state = EventLifecycleStates.PENDING;
     private String title;
 }

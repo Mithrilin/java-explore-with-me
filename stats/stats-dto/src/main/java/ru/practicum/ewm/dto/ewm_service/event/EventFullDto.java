@@ -41,5 +41,5 @@ public class EventFullDto {
     private EventLifecycleStates state;
     @NotBlank(message = "title не может быть пустым.")
     private String title;
-    private Long views;
+    private Long views = 0L;
 }
