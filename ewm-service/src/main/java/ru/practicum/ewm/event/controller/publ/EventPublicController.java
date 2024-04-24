@@ -1,6 +1,7 @@
-package ru.practicum.ewm.event.controller.priv;
+package ru.practicum.ewm.event.controller.publ;
 
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,16 +30,36 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/users/{userId}/events")
+@RequestMapping("/events")
 @Validated
-public class EventPrivateController {
+public class EventPublicController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventShortDto> getEventsByUserId(@PathVariable @Positive Long userId,
-                                                 @RequestParam(defaultValue = "0") @Min(0) int from,
-                                                 @RequestParam(defaultValue = "10") @Positive int size) {
-        return eventService.getEventByUserId(userId, from, size);
+    public List<EventShortDto> getEventsBySearchWithParams(@PathVariable String text,
+                                                           @PathVariable List<Long> categories,
+                                                           @PathVariable Boolean paid,
+                                                           @RequestParam
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                           LocalDateTime rangeStart,
+                                                           @RequestParam
+                                                           @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                           LocalDateTime rangeEnd,
+                                                           @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+                                                           @RequestParam String sort,  // Available values : EVENT_DATE, VIEWS
+                                                           @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                           @RequestParam(defaultValue = "10") @Positive int size) {
+
+        return eventService.getEventsBySearchWithParams(
+                text,
+                categories,
+                paid,
+                rangeStart,
+                rangeEnd,
+                onlyAvailable,
+                sort,
+                from,
+                size);
     }
 
     @PostMapping
@@ -79,8 +100,8 @@ public class EventPrivateController {
 
     @PatchMapping("/{eventId}/requests")
     public EventFullDto updateEventRequestStatusByEventId(@PathVariable @Positive Long userId,
-                                                          @PathVariable @Positive Long eventId,
-                                                          @RequestBody @Valid EventRequestStatusUpdateRequest request) {
+                                                 @PathVariable @Positive Long eventId,
+                                                 @RequestBody @Valid EventRequestStatusUpdateRequest request) {
         return eventService.updateEventRequestStatusByEventId(userId, eventId, request);
     }
 }
