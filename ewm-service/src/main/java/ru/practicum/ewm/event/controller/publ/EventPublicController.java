@@ -20,6 +20,7 @@ import ru.practicum.ewm.dto.ewm_service.event.NewEventDto;
 import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
 import ru.practicum.ewm.dto.ewm_service.event.UpdateEventUserRequest;
 import ru.practicum.ewm.dto.ewm_service.event.enums.UpdateEventStates;
+import ru.practicum.ewm.dto.ewm_service.event.params.ShortEventRequestParams;
 import ru.practicum.ewm.event.service.EventService;
 
 import javax.validation.Valid;
@@ -49,17 +50,17 @@ public class EventPublicController {
                                                            @RequestParam String sort,  // Available values : EVENT_DATE, VIEWS
                                                            @RequestParam(defaultValue = "0") @Min(0) int from,
                                                            @RequestParam(defaultValue = "10") @Positive int size) {
-
-        return eventService.getEventsBySearchWithParams(
+        ShortEventRequestParams shortEventRequestParams = new ShortEventRequestParams(
                 text,
                 categories,
                 paid,
                 rangeStart,
                 rangeEnd,
                 onlyAvailable,
-                sort,
                 from,
-                size);
+                size
+        );
+        return eventService.getEventsBySearchWithParams(shortEventRequestParams);
     }
 
     @PostMapping

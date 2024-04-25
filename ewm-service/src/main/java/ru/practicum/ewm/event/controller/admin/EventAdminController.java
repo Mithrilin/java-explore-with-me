@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
 import ru.practicum.ewm.dto.ewm_service.event.UpdateEventAdminRequest;
 import ru.practicum.ewm.dto.ewm_service.event.enums.EventLifecycleStates;
-import ru.practicum.ewm.dto.ewm_service.event.params.EventRequestParams;
+import ru.practicum.ewm.dto.ewm_service.event.params.FullEventRequestParams;
 import ru.practicum.ewm.event.service.EventService;
 
 import javax.validation.Valid;
@@ -39,7 +39,7 @@ public class EventAdminController {
                                                 LocalDateTime rangeEnd,
                                                 @RequestParam(defaultValue = "0") @Min(0) int from,
                                                 @RequestParam(defaultValue = "10") @Positive int size) {
-        EventRequestParams eventRequestParams = new EventRequestParams(
+        FullEventRequestParams fullEventRequestParams = new FullEventRequestParams(
                 users,
                 states,
                 categories,
@@ -48,7 +48,7 @@ public class EventAdminController {
                 from,
                 size
         );
-        return eventService.getEventsByParams(eventRequestParams);
+        return eventService.getEventsByParams(fullEventRequestParams);
     }
 
     @PatchMapping("/{eventId}")
