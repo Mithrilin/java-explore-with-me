@@ -6,7 +6,14 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
 import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
+import ru.practicum.ewm.dto.ewm_service.event.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.dto.ewm_service.event.EventShortDto;
 import ru.practicum.ewm.dto.ewm_service.event.NewEventDto;
+import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
+import ru.practicum.ewm.dto.ewm_service.event.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.ewm_service.event.UpdateEventUserRequest;
+import ru.practicum.ewm.dto.ewm_service.event.params.FullEventRequestParams;
+import ru.practicum.ewm.dto.ewm_service.event.params.ShortEventRequestParams;
 import ru.practicum.ewm.dto.exception.NotFoundException;
 import ru.practicum.ewm.event.mapper.EventMapper;
 import ru.practicum.ewm.event.mapper.LocationMapper;
@@ -18,6 +25,7 @@ import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -44,6 +52,51 @@ public class EventServiceImpl implements EventService {
         EventFullDto eventFullDto = eventMapper.toEventFullDto(returnedEvent);
         log.info("Добавлено новое событие с ID = {}", returnedEvent.getId());
         return eventFullDto;
+    }
+
+    @Override
+    public List<EventFullDto> getEventsByParams(FullEventRequestParams fullEventRequestParams) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto updateEventAdminRequestByEventId(Long eventId, UpdateEventAdminRequest request) {
+        return null;
+    }
+
+    @Override
+    public List<EventShortDto> getEventsBySearchWithParams(ShortEventRequestParams shortEventRequestParams) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto getEventById(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<EventShortDto> getEventByUserId(Long userId, int from, int size) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto updateEventByUserIdAndEventId(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
+        return null;
+    }
+
+    @Override
+    public List<ParticipationRequestDto> getEventParticipationListByEventId(Long userId, Long eventId) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto updateEventRequestStatusByEventId(Long userId, Long eventId, EventRequestStatusUpdateRequest request) {
+        return null;
     }
 
     private User isUserPresent(long userId) {

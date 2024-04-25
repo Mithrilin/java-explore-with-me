@@ -12,7 +12,7 @@ import ru.practicum.ewm.user.model.User;
 @Mapper(componentModel = "spring")
 public interface EventMapper {
 
-    @Mapping(target = "id", constant = "null")
+    @Mapping(target = "id", constant = "0L")
     @Mapping(source = "category", target = "category")
     @Mapping(source = "user", target = "initiator")
     @Mapping(source = "location", target = "location")

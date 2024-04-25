@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
+import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
 import ru.practicum.ewm.dto.ewm_service.user.NewUserRequest;
 import ru.practicum.ewm.dto.ewm_service.user.UserDto;
 import ru.practicum.ewm.dto.exception.NotFoundException;
@@ -66,6 +68,21 @@ public class UserServiceImpl implements UserService {
         return userDtoList;
     }
 
+    @Override
+    public List<ParticipationRequestDto> getRequestsByUserId(long userId) {
+        return null;
+    }
+
+    @Override
+    public ParticipationRequestDto addParticipation(long userId, long eventId) {
+        return null;
+    }
+
+    @Override
+    public EventFullDto cancelParticipationByUserId(long userId, long requestId) {
+        return null;
+    }
+
     private User isUserPresent(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
@@ -74,37 +91,4 @@ public class UserServiceImpl implements UserService {
         }
         return optionalUser.get();
     }
-//    @Override
-//    @Transactional
-//    public UserDto updateUser(UserDto userDto) {
-//        User oldUser = isUserPresent(userDto.getId());
-//        String newEmail = userDto.getEmail();
-//        if (newEmail != null) {
-//            oldUser.setEmail(newEmail);
-//        }
-//        String newName = userDto.getName();
-//        if (newName != null) {
-//            oldUser.setName(newName);
-//        }
-//        User updatedUser = userRepository.save(oldUser);
-//        log.info("Пользователь с ID {} обновлён.", updatedUser.getId());
-//        return UserMapper.toUserDto(updatedUser);
-//    }
-//
-//    @Override
-//    public UserDto getUserById(long id) {
-//        User user = isUserPresent(id);
-//        UserDto userDto = UserMapper.toUserDto(user);
-//        log.info("Пользователь с ID {} возвращён.", id);
-//        return userDto;
-//    }
-//
-//
-//    @Override
-//    public List<UserDto> getAllUsers() {
-//        List<User> users = userRepository.findAll();
-//        log.info("Текущее количество пользователей: {}. Список возвращён.", users.size());
-//        return UserMapper.toUserDtos(users);
-//    }
-//
 }

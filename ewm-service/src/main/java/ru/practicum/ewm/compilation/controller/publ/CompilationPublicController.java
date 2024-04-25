@@ -12,6 +12,7 @@ import ru.practicum.ewm.dto.ewm_service.compilation.CompilationDto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -21,9 +22,9 @@ public class CompilationPublicController {
     private final CompilationService compilationService;
 
     @GetMapping
-    public CompilationDto getAllCompilations(@RequestParam Boolean pinned,
-                                             @RequestParam (defaultValue = "0") @Min(0) int from,
-                                             @RequestParam (defaultValue = "10") @Positive int size) {
+    public List<CompilationDto> getAllCompilations(@RequestParam(required = false) Boolean pinned,
+                                                   @RequestParam(defaultValue = "0") @Min(0) int from,
+                                                   @RequestParam(defaultValue = "10") @Positive int size) {
         return compilationService.getAllCompilations(pinned, from, size);
     }
 
