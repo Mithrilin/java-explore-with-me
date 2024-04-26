@@ -11,13 +11,13 @@ public interface UserService {
 
     UserDto addUser(NewUserRequest newUserRequest);
 
-    void deleteUser(long userId);
+    void deleteUser(Long userId);
 
     List<UserDto> getUsersByIds(List<Long> ids, int from, int size);
 
-    List<ParticipationRequestDto> getRequestsByUserId(long userId);
+    List<ParticipationRequestDto> getRequestsByUserId(Long userId);
 
-    ParticipationRequestDto addParticipation(long userId, long eventId);
+    ParticipationRequestDto addParticipation(Long userId, Long eventId);
 
-    EventFullDto cancelParticipationByUserId(long userId, long requestId);
+    EventFullDto cancelParticipationByUserId(Long userId, Long requestId);
 }

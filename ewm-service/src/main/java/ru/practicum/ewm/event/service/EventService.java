@@ -22,7 +22,7 @@ public interface EventService {
 
     List<EventShortDto> getEventsBySearchWithParams(ShortEventRequestParams shortEventRequestParams);
 
-    EventFullDto getEventById(Long id);
+    EventFullDto getEventById(Long eventId);
 
     List<EventShortDto> getEventByUserId(Long userId, int from, int size);
 

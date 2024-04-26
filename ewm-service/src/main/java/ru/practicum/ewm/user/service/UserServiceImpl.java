@@ -10,7 +10,10 @@ import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
 import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
 import ru.practicum.ewm.dto.ewm_service.user.NewUserRequest;
 import ru.practicum.ewm.dto.ewm_service.user.UserDto;
+import ru.practicum.ewm.dto.exception.ConflictException;
 import ru.practicum.ewm.dto.exception.NotFoundException;
+import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.event.repository.EventRepository;
 import ru.practicum.ewm.user.mapper.UserMapper;
 import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
@@ -25,6 +28,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final EventRepository eventRepository;
+
     private final UserMapper userMapper;
 
     @Override
@@ -38,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(long userId) {
+    public void deleteUser(Long userId) {
         isUserPresent(userId);
         userRepository.deleteById(userId);
         log.info("Пользователь с ID {} удалён.", userId);
@@ -69,26 +74,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<ParticipationRequestDto> getRequestsByUserId(long userId) {
+    public List<ParticipationRequestDto> getRequestsByUserId(Long userId) {
         return null;
     }
 
     @Override
-    public ParticipationRequestDto addParticipation(long userId, long eventId) {
+    public ParticipationRequestDto addParticipation(Long userId, Long eventId) {
+        Event event = isEventPresent(eventId);
+
+
         return null;
     }
 
     @Override
-    public EventFullDto cancelParticipationByUserId(long userId, long requestId) {
+    public EventFullDto cancelParticipationByUserId(Long userId, Long requestId) {
         return null;
     }
 
-    private User isUserPresent(long userId) {
+    private User isUserPresent(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
             log.error("Пользователь с ИД {} отсутствует в БД.", userId);
             throw new NotFoundException(String.format("Пользователь с ИД %d отсутствует в БД.", userId));
         }
         return optionalUser.get();
+    }
+
+    private void isUserInitiator(Long userId, Event event) {
+        if (event.getInitiator().getId().equals(userId)) {
+            log.error("Пользователь с ИД {} является создателем события с ИД {}.", userId, event.getId());
+            throw new ConflictException(String.format("Пользователь с ИД %d является создателем события с ИД %d",
+                    userId, event.getId()));
+        }
+    }
+
+    private Event isEventPresent(Long eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if (optionalEvent.isEmpty()) {
+            log.error("Событие с ИД {} отсутствует в БД.", eventId);
+            throw new NotFoundException(String.format("Событие с ИД %d отсутствует в БД.", eventId));
+        }
+        return optionalEvent.get();
     }
 }

@@ -26,20 +26,20 @@ public class UserPrivateController {
     private final UserService userService;
 
     @GetMapping
-    public List<ParticipationRequestDto> getRequestsByUserId(@PathVariable @Positive long userId) {
+    public List<ParticipationRequestDto> getRequestsByUserId(@PathVariable @Positive Long userId) {
         return userService.getRequestsByUserId(userId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto addParticipation(@PathVariable @Positive long userId,
-                                                    @RequestParam @Positive long eventId) {
+    public ParticipationRequestDto addParticipation(@PathVariable @Positive Long userId,
+                                                    @RequestParam @Positive Long eventId) {
         return userService.addParticipation(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public EventFullDto cancelParticipationByUserId(@PathVariable @Positive long userId,
-                                                    @PathVariable @Positive long requestId) {
+    public EventFullDto cancelParticipationByUserId(@PathVariable @Positive Long userId,
+                                                    @PathVariable @Positive Long requestId) {
         return userService.cancelParticipationByUserId(userId, requestId);
     }
 }

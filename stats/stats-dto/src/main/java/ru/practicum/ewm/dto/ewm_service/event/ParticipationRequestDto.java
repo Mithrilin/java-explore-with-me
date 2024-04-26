@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.dto.ewm_service.event.enums.RequestParticipateStatus;
 
 import java.time.LocalDateTime;
 
@@ -16,5 +17,5 @@ public class ParticipationRequestDto {
     private LocalDateTime created;
     private Long event;
     private Long requester;
-    private String status;
+    private RequestParticipateStatus status = RequestParticipateStatus.PENDING;
 }

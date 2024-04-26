@@ -14,6 +14,7 @@ import ru.practicum.ewm.dto.ewm_service.event.UpdateEventAdminRequest;
 import ru.practicum.ewm.dto.ewm_service.event.UpdateEventUserRequest;
 import ru.practicum.ewm.dto.ewm_service.event.params.FullEventRequestParams;
 import ru.practicum.ewm.dto.ewm_service.event.params.ShortEventRequestParams;
+import ru.practicum.ewm.dto.exception.BadRequestException;
 import ru.practicum.ewm.dto.exception.NotFoundException;
 import ru.practicum.ewm.event.mapper.EventMapper;
 import ru.practicum.ewm.event.mapper.LocationMapper;
@@ -81,6 +82,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
+        Event event = isEventPresent(eventId);
+        isUserInitiator(userId, event);
+
+
         return null;
     }
 
@@ -108,6 +113,14 @@ public class EventServiceImpl implements EventService {
         return optionalUser.get();
     }
 
+    private void isUserInitiator(Long userId, Event event) {
+        if (!event.getInitiator().getId().equals(userId)) {
+            log.error("Пользователь с ИД {} не является создателем события с ИД {}.", userId, event.getId());
+            throw new BadRequestException(String.format("Пользователь с ИД %d не является создателем события с ИД %d",
+                    userId, event.getId()));
+        }
+    }
+
     private Category isCategoryPresent(long catId) {
         Optional<Category> optionalCategory = categoryRepository.findById(catId);
         if (optionalCategory.isEmpty()) {
@@ -115,5 +128,14 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException(String.format("Категория с ИД %d отсутствует в БД.", catId));
         }
         return optionalCategory.get();
+    }
+
+    private Event isEventPresent(long eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if (optionalEvent.isEmpty()) {
+            log.error("Событие с ИД {} отсутствует в БД.", eventId);
+            throw new NotFoundException(String.format("Событие с ИД %d отсутствует в БД.", eventId));
+        }
+        return optionalEvent.get();
     }
 }
