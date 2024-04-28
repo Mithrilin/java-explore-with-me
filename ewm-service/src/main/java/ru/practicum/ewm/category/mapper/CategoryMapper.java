@@ -10,9 +10,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
-    Category toCategory(NewCategoryDto newCategoryDto);
+    Category newCategoryDtoToCategory(NewCategoryDto newCategoryDto);
 
-    CategoryDto toCategoryDto(Category category);
+    CategoryDto categoryToCategoryDto(Category category);
 
-    List<CategoryDto> toCategoryDtoList(List<Category> categoryList);
+    List<CategoryDto> categoryListToCategoryDtoList(List<Category> categoryList);
 }

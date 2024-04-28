@@ -1,7 +1,6 @@
 package ru.practicum.ewm.user.service;
 
-import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
-import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
+import ru.practicum.ewm.dto.ewm_service.participation.ParticipationRequestDto;
 import ru.practicum.ewm.dto.ewm_service.user.NewUserRequest;
 import ru.practicum.ewm.dto.ewm_service.user.UserDto;
 
@@ -19,5 +18,5 @@ public interface UserService {
 
     ParticipationRequestDto addParticipation(Long userId, Long eventId);
 
-    EventFullDto cancelParticipationByUserId(Long userId, Long requestId);
+    ParticipationRequestDto cancelParticipationByUserId(Long userId, Long requestId);
 }

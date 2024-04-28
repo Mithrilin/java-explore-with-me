@@ -7,7 +7,7 @@ import ru.practicum.ewm.stats.model.HitStats;
 @Mapper(componentModel = "spring")
 public interface HitStatsMapper {
 
-    HitStats toHitStats(EndpointHit endpointHit);
+    HitStats endpointHitToHitStats(EndpointHit endpointHit);
 
-    EndpointHit toEndpointHit(HitStats returnedHitStats);
+    EndpointHit hitStatsToEndpointHit(HitStats returnedHitStats);
 }

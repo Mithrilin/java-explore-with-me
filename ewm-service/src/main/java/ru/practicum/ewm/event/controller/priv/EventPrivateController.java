@@ -1,6 +1,7 @@
 package ru.practicum.ewm.event.controller.priv;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +15,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
 import ru.practicum.ewm.dto.ewm_service.event.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.dto.ewm_service.event.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.dto.ewm_service.event.EventShortDto;
 import ru.practicum.ewm.dto.ewm_service.event.NewEventDto;
-import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
-import ru.practicum.ewm.dto.ewm_service.event.UpdateEventUserRequest;
-import ru.practicum.ewm.dto.ewm_service.event.enums.UpdateEventStates;
+import ru.practicum.ewm.dto.ewm_service.participation.ParticipationRequestDto;
+import ru.practicum.ewm.dto.ewm_service.event.update_event.UpdateEventUserRequest;
+import ru.practicum.ewm.dto.exception.BadRequestException;
+import ru.practicum.ewm.dto.exception.ConflictException;
 import ru.practicum.ewm.event.service.EventService;
 
 import javax.validation.Valid;
@@ -27,6 +30,7 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 @RestController
 @RequestMapping("/users/{userId}/events")
@@ -45,10 +49,14 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto createEvent(@PathVariable @Positive Long userId,
                                     @RequestBody @Valid NewEventDto newEventDto) {
+
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            // временное решение
-            throw new RuntimeException();
+            log.error("Дата и время на которые намечено событие не может быть раньше, " +
+                    "чем через два часа от текущего момента");
+            throw new ConflictException("Дата и время на которые намечено событие не может быть раньше, " +
+                    "чем через два часа от текущего момента");
         }
+
         return eventService.addEvent(userId, newEventDto);
     }
 
@@ -62,12 +70,20 @@ public class EventPrivateController {
     public EventFullDto updateEventByUserIdAndEventId(@PathVariable @Positive Long userId,
                                                       @PathVariable @Positive Long eventId,
                                                       @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
-        if (updateEventUserRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(2))
-                || (updateEventUserRequest.getStateAction() != UpdateEventStates.REJECT_EVENT
-                && updateEventUserRequest.getStateAction() != UpdateEventStates.SEND_TO_REVIEW)) {
-            // временное решение
-            throw new RuntimeException();
+        if (updateEventUserRequest.getEventDate() != null
+                && updateEventUserRequest.getEventDate().isBefore(LocalDateTime.now())) {
+            log.error("Дата и время на которые намечено событие не может быть в прошлом.");
+            throw new BadRequestException("Дата и время на которые намечено событие не может быть в прошлом.");
         }
+
+        if (updateEventUserRequest.getEventDate() != null
+                && updateEventUserRequest.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
+            log.error("Дата и время на которые намечено событие не может быть раньше, " +
+                    "чем через два часа от текущего момента");
+            throw new ConflictException("Дата и время на которые намечено событие не может быть раньше, " +
+                    "чем через два часа от текущего момента");
+        }
+
         return eventService.updateEventByUserIdAndEventId(userId, eventId, updateEventUserRequest);
     }
 
@@ -78,9 +94,9 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{eventId}/requests")
-    public EventFullDto updateEventRequestStatusByEventId(@PathVariable @Positive Long userId,
-                                                          @PathVariable @Positive Long eventId,
-                                                          @RequestBody @Valid EventRequestStatusUpdateRequest request) {
+    public EventRequestStatusUpdateResult updateEventRequestStatusByEventId(@PathVariable @Positive Long userId,
+                                                                            @PathVariable @Positive Long eventId,
+                                                                            @RequestBody @Valid EventRequestStatusUpdateRequest request) {
         return eventService.updateEventRequestStatusByEventId(userId, eventId, request);
     }
 }

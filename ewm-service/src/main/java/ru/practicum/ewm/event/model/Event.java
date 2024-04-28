@@ -68,4 +68,5 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventLifecycleStates state = EventLifecycleStates.PENDING;
     private String title;
+    private Long views = 0L;
 }

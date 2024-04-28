@@ -34,12 +34,12 @@ public class EventFullDto {
     private LocationDto location;
     @NotNull
     private boolean paid;
-    private Integer participantLimit = 0;
+    private Integer participantLimit;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
-    private boolean requestModeration = true;
+    private boolean requestModeration;
     private EventLifecycleStates state;
     @NotBlank(message = "title не может быть пустым.")
     private String title;
-    private Long views = 0L;
+    private Long views;
 }

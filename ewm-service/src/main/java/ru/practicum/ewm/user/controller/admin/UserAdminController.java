@@ -41,9 +41,9 @@ public class UserAdminController {
     }
 
     @GetMapping
-    public List<UserDto> getUsersByIds(@RequestParam (required = false) List<Long> ids,
-                                       @RequestParam (defaultValue = "0") @Min(0) int from,
-                                       @RequestParam (defaultValue = "10") @Positive int size) {
+    public List<UserDto> getUsersByIds(@RequestParam(required = false) List<Long> ids,
+                                       @RequestParam(defaultValue = "0") @Min(0) int from,
+                                       @RequestParam(defaultValue = "10") @Positive int size) {
         return userService.getUsersByIds(ids, from, size);
     }
 }

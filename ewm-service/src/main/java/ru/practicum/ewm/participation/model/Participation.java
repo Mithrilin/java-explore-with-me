@@ -1,4 +1,4 @@
-package ru.practicum.ewm.user.model;
+package ru.practicum.ewm.participation.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.practicum.ewm.dto.ewm_service.event.enums.RequestParticipateStatus;
+import ru.practicum.ewm.dto.ewm_service.participation.enums.RequestParticipateStatus;
+import ru.practicum.ewm.event.model.Event;
+import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,13 +23,13 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "participation_request")
+@Table(name = "participation")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
-public class ParticipationRequest {
+public class Participation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,11 +38,11 @@ public class ParticipationRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinColumn(name = "event_id")
-    private Long event;
+    private Event event;
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinColumn(name = "requester_id")
-    private Long requester;
+    private User requester;
     @Enumerated(EnumType.STRING)
     private RequestParticipateStatus status = RequestParticipateStatus.PENDING;
 }

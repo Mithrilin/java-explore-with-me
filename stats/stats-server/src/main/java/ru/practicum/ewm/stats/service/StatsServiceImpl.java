@@ -19,14 +19,15 @@ import java.util.List;
 @AllArgsConstructor
 public class StatsServiceImpl implements StatsService {
     private final HitStatsRepository hitStatsRepository;
+
     private final HitStatsMapper hitStatsMapper;
 
     @Override
     @Transactional
     public EndpointHit addHitStats(EndpointHit endpointHit) {
-        HitStats hitStats = hitStatsMapper.toHitStats(endpointHit);
+        HitStats hitStats = hitStatsMapper.endpointHitToHitStats(endpointHit);
         HitStats returnedHitStats = hitStatsRepository.save(hitStats);
-        EndpointHit returnedEndpointHit = hitStatsMapper.toEndpointHit(returnedHitStats);
+        EndpointHit returnedEndpointHit = hitStatsMapper.hitStatsToEndpointHit(returnedHitStats);
         log.info("Добавлена новая запись в статистику запросов с ID = {}", returnedHitStats.getId());
         return returnedEndpointHit;
     }
@@ -34,15 +35,18 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStats> getViewStatsListWithoutUris(LocalDateTime start, LocalDateTime end, Boolean unique) {
         List<ViewStats> viewStatsList;
+
         if (unique) {
             viewStatsList = hitStatsRepository.getViewStatsWithUniqueTrue(start, end);
         } else {
             viewStatsList = hitStatsRepository.getViewStatsWithUniqueFalse(start, end);
         }
+
         if (viewStatsList.isEmpty()) {
             log.info("Список со статистикой просмотров для указанных параметров пуст.");
             return new ArrayList<>();
         }
+
         log.info("Список статистики просмотров с параметром unique = {} размером {} возвращён.", unique, viewStatsList.size());
         return viewStatsList;
     }
@@ -50,15 +54,18 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<ViewStats> getViewStatsListWithUris(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<ViewStats> viewStatsList;
+
         if (unique) {
             viewStatsList = hitStatsRepository.getViewStatsWithUrisUniqueTrue(uris, start, end);
         } else {
             viewStatsList = hitStatsRepository.getViewStatsWithUrisUniqueFalse(uris, start, end);
         }
+
         if (viewStatsList.isEmpty()) {
             log.info("Список со статистикой просмотров для указанных параметров пуст.");
             return new ArrayList<>();
         }
+
         log.info("Список статистики просмотров с параметром unique = {} размером {} возвращён.", unique, viewStatsList.size());
         return viewStatsList;
     }

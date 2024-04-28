@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import ru.practicum.ewm.dto.ewm_service.event.enums.EventSortAvailableValues;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ShortEventRequestParams {
                                    LocalDateTime rangeStart,
                                    LocalDateTime rangeEnd,
                                    Boolean onlyAvailable,
+                                   EventSortAvailableValues sort,
                                    Integer from,
                                    Integer size) {
         this.text = text;
@@ -41,7 +43,8 @@ public class ShortEventRequestParams {
         this.from = from;
         this.size = size;
         this.page = from / size;
-        this.sort = Sort.by(Sort.Direction.ASC, "id");
-        this.pageRequest = PageRequest.of(page, size, sort);
+        this.sort = sort == EventSortAvailableValues.VIEWS ? Sort.by(Sort.Direction.DESC, "views")
+                : Sort.by(Sort.Direction.ASC, "eventDate");
+        this.pageRequest = PageRequest.of(page, size, this.sort);
     }
 }

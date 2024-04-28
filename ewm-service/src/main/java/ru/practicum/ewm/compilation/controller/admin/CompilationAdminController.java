@@ -34,12 +34,13 @@ public class CompilationAdminController {
 
     @DeleteMapping("/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilation(@PathVariable @Positive long compId) {
+    public void deleteCompilation(@PathVariable @Positive Long compId) {
         compilationService.deleteCompilation(compId);
     }
 
     @PatchMapping("/{compId}")
-    public UpdateCompilationRequest updateCompilationById(@PathVariable @Positive long compId) {
-        return compilationService.updateCompilationById(compId);
+    public CompilationDto updateCompilationById(@PathVariable @Positive Long compId,
+                                                @RequestBody @Valid UpdateCompilationRequest updateCompilationRequest) {
+        return compilationService.updateCompilationById(compId, updateCompilationRequest);
     }
 }

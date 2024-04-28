@@ -1,4 +1,4 @@
-package ru.practicum.ewm.dto.ewm_service;
+package ru.practicum.ewm.dto.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

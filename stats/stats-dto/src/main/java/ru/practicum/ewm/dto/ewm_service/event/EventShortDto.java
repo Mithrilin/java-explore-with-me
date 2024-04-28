@@ -25,7 +25,7 @@ public class EventShortDto {
     private LocalDateTime eventDate;
     private UserShortDto initiator;
     @NotNull
-    private boolean paid;
+    private Boolean paid;
     @NotBlank(message = "title не может быть пустым.")
     private String title;
     private Long views;

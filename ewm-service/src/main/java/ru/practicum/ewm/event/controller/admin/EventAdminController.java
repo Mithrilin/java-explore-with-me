@@ -2,6 +2,7 @@ package ru.practicum.ewm.event.controller.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
-import ru.practicum.ewm.dto.ewm_service.event.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.ewm_service.event.update_event.UpdateEventAdminRequest;
 import ru.practicum.ewm.dto.ewm_service.event.enums.EventLifecycleStates;
 import ru.practicum.ewm.dto.ewm_service.event.params.FullEventRequestParams;
 import ru.practicum.ewm.event.service.EventService;
@@ -24,17 +25,18 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/admin/events")
+@Validated
 public class EventAdminController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventFullDto> getEventsByParams(@RequestParam List<Long> users,
-                                                @RequestParam List<EventLifecycleStates> states,
-                                                @RequestParam List<Long> categories,
-                                                @RequestParam
+    public List<EventFullDto> getEventsByParams(@RequestParam(required = false) List<Long> users,
+                                                @RequestParam(required = false) List<EventLifecycleStates> states,
+                                                @RequestParam(required = false) List<Long> categories,
+                                                @RequestParam(required = false)
                                                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                                 LocalDateTime rangeStart,
-                                                @RequestParam
+                                                @RequestParam(required = false)
                                                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                                 LocalDateTime rangeEnd,
                                                 @RequestParam(defaultValue = "0") @Min(0) int from,

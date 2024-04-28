@@ -1,45 +1,113 @@
 package ru.practicum.ewm.exception;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.NonNull;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ru.practicum.ewm.dto.exception.ApiError;
 import ru.practicum.ewm.dto.exception.BadRequestException;
 import ru.practicum.ewm.dto.exception.ConflictException;
 import ru.practicum.ewm.dto.exception.NotFoundException;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Slf4j
 @RestControllerAdvice
-public class ErrorHandler {
+public class ErrorHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleBadRequest(final BadRequestException e) {
-        log.error("Получен статус 400 BAD_REQUEST. {}", e.getMessage(), e);
-        return Map.of("errorMessage", e.getMessage());
+    @ExceptionHandler({BadRequestException.class, IllegalArgumentException.class})
+    public ResponseEntity<ApiError> handleMissingRequestParameter(Exception ex) throws IOException {
+        ApiError apiError = new ApiError(
+                Collections.singletonList(error(ex)),
+                ex.getLocalizedMessage(),
+                "Incorrectly made request",
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFound(final NotFoundException e) {
-        log.error("Получен статус 404 NOT_FOUND. {}", e.getMessage(), e);
-        return Map.of("errorMessage", e.getMessage());
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<ApiError> handleNotFound(Exception ex) throws IOException {
+        ApiError apiError = new ApiError(
+                Collections.singletonList(error(ex)),
+                ex.getLocalizedMessage(),
+                "The required object was not found.",
+                HttpStatus.NOT_FOUND,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleConflict(final ConflictException e) {
-        log.error("Получен статус 409 CONFLICT. {}", e.getMessage(), e);
-        return Map.of("errorMessage", e.getMessage());
+    @ExceptionHandler({ConflictException.class, DataIntegrityViolationException.class})
+    public ResponseEntity<ApiError> handleConflict(Exception ex) throws IOException {
+        ApiError apiError = new ApiError(
+                Collections.singletonList(error(ex)),
+                ex.getLocalizedMessage(),
+                "For the requested operation the conditions are not met",
+                HttpStatus.CONFLICT,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleAllException(final Exception e) {
-        log.error("Получен статус 500 Internal Server Error. {}", e.getMessage(), e);
-        return Map.of("errorMessage", e.getMessage());
+    @Override
+    protected @NonNull ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                                   @NonNull HttpHeaders headers,
+                                                                                   @NonNull HttpStatus status,
+                                                                                   @NonNull WebRequest request) {
+        ApiError apiError = new ApiError(
+                Arrays.stream(ex.getStackTrace()).map(String::valueOf).collect(Collectors.toList()),
+                ex.getLocalizedMessage(),
+                "Incorrectly made request",
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @Override
+    public @NonNull ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                        @NonNull HttpHeaders headers,
+                                                                        @NonNull HttpStatus status,
+                                                                        @NonNull WebRequest request) {
+        List<String> errors = new ArrayList<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.add("Field: " + error.getField() + ". Error: " + error.getDefaultMessage() + " Value: " +
+                    error.getRejectedValue());
+        }
+        ApiError apiError = new ApiError(
+                errors,
+                ex.getLocalizedMessage(),
+                "Incorrectly made request",
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    private String error(Exception e) throws IOException {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        String error = sw.toString();
+        sw.close();
+        pw.close();
+        return error;
     }
 }

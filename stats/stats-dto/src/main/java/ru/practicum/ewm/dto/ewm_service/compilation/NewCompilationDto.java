@@ -15,6 +15,6 @@ public class NewCompilationDto {
     private Set<Long> events;
     private Boolean pinned = false;
     @NotBlank(message = "title не может быть пустым.")
-    @Length(min = 1, max = 50, message = "Длина name должна быть в диапазоне от 1 до 50 символов.")
+    @Length(min = 1, max = 50, message = "Длина title должна быть в диапазоне от 1 до 50 символов.")
     private String title;
 }

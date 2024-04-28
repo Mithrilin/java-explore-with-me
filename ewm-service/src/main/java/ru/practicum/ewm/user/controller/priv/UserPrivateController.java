@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
-import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
+import ru.practicum.ewm.dto.ewm_service.participation.ParticipationRequestDto;
 import ru.practicum.ewm.user.service.UserService;
 
 import javax.validation.constraints.Positive;
@@ -38,8 +37,8 @@ public class UserPrivateController {
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public EventFullDto cancelParticipationByUserId(@PathVariable @Positive Long userId,
-                                                    @PathVariable @Positive Long requestId) {
+    public ParticipationRequestDto cancelParticipationByUserId(@PathVariable @Positive Long userId,
+                                                               @PathVariable @Positive Long requestId) {
         return userService.cancelParticipationByUserId(userId, requestId);
     }
 }

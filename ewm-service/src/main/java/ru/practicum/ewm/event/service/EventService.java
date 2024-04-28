@@ -2,14 +2,16 @@ package ru.practicum.ewm.event.service;
 
 import ru.practicum.ewm.dto.ewm_service.event.EventFullDto;
 import ru.practicum.ewm.dto.ewm_service.event.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.dto.ewm_service.event.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.dto.ewm_service.event.EventShortDto;
 import ru.practicum.ewm.dto.ewm_service.event.NewEventDto;
-import ru.practicum.ewm.dto.ewm_service.event.ParticipationRequestDto;
-import ru.practicum.ewm.dto.ewm_service.event.UpdateEventAdminRequest;
-import ru.practicum.ewm.dto.ewm_service.event.UpdateEventUserRequest;
+import ru.practicum.ewm.dto.ewm_service.participation.ParticipationRequestDto;
+import ru.practicum.ewm.dto.ewm_service.event.update_event.UpdateEventAdminRequest;
+import ru.practicum.ewm.dto.ewm_service.event.update_event.UpdateEventUserRequest;
 import ru.practicum.ewm.dto.ewm_service.event.params.FullEventRequestParams;
 import ru.practicum.ewm.dto.ewm_service.event.params.ShortEventRequestParams;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
@@ -20,9 +22,9 @@ public interface EventService {
 
     EventFullDto updateEventAdminRequestByEventId(Long eventId, UpdateEventAdminRequest request);
 
-    List<EventShortDto> getEventsBySearchWithParams(ShortEventRequestParams shortEventRequestParams);
+    List<EventShortDto> getEventsBySearchWithParams(ShortEventRequestParams shortEventRequestParams, HttpServletRequest request);
 
-    EventFullDto getEventById(Long eventId);
+    EventFullDto getEventById(Long eventId, HttpServletRequest request);
 
     List<EventShortDto> getEventByUserId(Long userId, int from, int size);
 
@@ -32,5 +34,5 @@ public interface EventService {
 
     List<ParticipationRequestDto> getEventParticipationListByEventId(Long userId, Long eventId);
 
-    EventFullDto updateEventRequestStatusByEventId(Long userId, Long eventId, EventRequestStatusUpdateRequest request);
+    EventRequestStatusUpdateResult updateEventRequestStatusByEventId(Long userId, Long eventId, EventRequestStatusUpdateRequest request);
 }

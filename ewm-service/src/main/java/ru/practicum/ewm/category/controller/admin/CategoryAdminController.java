@@ -2,6 +2,7 @@ package ru.practicum.ewm.category.controller.admin;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/admin/categories")
+@Validated
 public class CategoryAdminController {
     private final CategoryService categoryService;
 
@@ -37,7 +39,7 @@ public class CategoryAdminController {
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@PathVariable @Positive long catId,
-                                      @RequestBody CategoryDto categoryDto) {
+                                      @RequestBody @Valid CategoryDto categoryDto) {
         return categoryService.updateCategory(catId, categoryDto);
     }
 }

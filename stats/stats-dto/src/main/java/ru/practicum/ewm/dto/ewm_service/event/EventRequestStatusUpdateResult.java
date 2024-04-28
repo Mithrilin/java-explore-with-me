@@ -3,6 +3,7 @@ package ru.practicum.ewm.dto.ewm_service.event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.ewm.dto.ewm_service.participation.ParticipationRequestDto;
 
 import java.util.List;
 
