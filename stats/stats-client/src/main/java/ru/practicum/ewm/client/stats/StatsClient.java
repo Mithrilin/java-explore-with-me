@@ -1,86 +1,65 @@
 package ru.practicum.ewm.client.stats;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 import ru.practicum.ewm.dto.stats.EndpointHit;
+import ru.practicum.ewm.dto.stats.ViewStats;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Slf4j
+@Component
 public class StatsClient {
-    private final RestTemplate rest;
+    private final WebClient webClient;
 
-    public StatsClient(@Value("http://localhost:9090") String statsServerUrl, RestTemplateBuilder builder) {
-        this.rest = builder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(statsServerUrl))
-                .requestFactory(HttpComponentsClientHttpRequestFactory::new)
-                .build();
+    public StatsClient(@Value("${stats-server.url}") String statsServerUrl) {
+        this.webClient = WebClient.create(statsServerUrl);
     }
 
-    public ResponseEntity<Object> addHitStats(EndpointHit endpointHit) {
-        return makeAndSendRequest(HttpMethod.POST, "/hit", null, endpointHit);
+    public EndpointHit addHitStats(EndpointHit endpointHit) {
+        return webClient
+                .post()
+                .uri("/hit")
+                .bodyValue(endpointHit)
+                .retrieve()
+                .bodyToMono(EndpointHit.class)
+                .doOnSuccess(e -> log.info("Статистические данные успешно сохранены."))
+                .doOnError(error -> log.error("Сервер статистики не отвечает. Информация по данному запросу не " +
+                        "сохранена в статистику! ErrorMessage: {}", error.getMessage()))
+                .block();
     }
 
-    public ResponseEntity<Object> getViewStatsList(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStats> getViewStatsList(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Map<String, Object> parameters = new HashMap<>(Map.of(
-                "start", start,
-                "end", end,
+                "start", start.format(formatter),
+                "end", end.format(formatter),
                 "unique", unique
         ));
+
         String path;
         if (uris == null) {
             path = "/stats?start={start}&end={end}&unique={unique}";
         } else {
-            parameters.put("uris", uris);
+            parameters.put("uris", String.join(",", uris));
             path = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
         }
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
-    }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, @Nullable Map<String, Object> parameters, @Nullable T body) {
-        HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
-        ResponseEntity<Object> statsServerResponse;
-        try {
-            if (parameters != null) {
-                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
-            } else {
-                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class);
-            }
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
-        }
-        return prepareGatewayResponse(statsServerResponse);
-    }
+        return webClient
+                .get()
+                .uri(path, parameters)
 
-    private HttpHeaders defaultHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        return headers;
-    }
-
-    private static ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return response;
-        }
-        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.status(response.getStatusCode());
-        if (response.hasBody()) {
-            return responseBuilder.body(response.getBody());
-        }
-        return responseBuilder.build();
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<ViewStats>>() {})
+                .doOnError(error -> log.error("Сервер статистики не отвечает. Информация по данному запросу не " +
+                        "сохранена в статистику! ErrorMessage: {}", error.getMessage()))
+                .block();
     }
 }
