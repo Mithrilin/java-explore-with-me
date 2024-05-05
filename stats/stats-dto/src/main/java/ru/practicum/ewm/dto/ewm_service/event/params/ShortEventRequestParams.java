@@ -44,6 +44,7 @@ public class ShortEventRequestParams {
         this.size = size;
         this.page = from / size;
         this.sort = sort == EventSortAvailableValues.VIEWS ? Sort.by(Sort.Direction.DESC, "views")
+                : sort == EventSortAvailableValues.RATING ? Sort.by(Sort.Direction.DESC, "rating")
                 : Sort.by(Sort.Direction.ASC, "eventDate");
         this.pageRequest = PageRequest.of(page, size, this.sort);
     }

@@ -69,4 +69,5 @@ public class Event {
     private EventLifecycleStates state = EventLifecycleStates.PENDING;
     private String title;
     private Long views = 0L;
+    private Double rating = 0.0;
 }

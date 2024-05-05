@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.compilation.mapper.CompilationMapper;
 import ru.practicum.ewm.compilation.model.Compilation;
 import ru.practicum.ewm.compilation.repository.CompilationRepository;
+import ru.practicum.ewm.compilation.service.helper.CompilationValidationHelper;
 import ru.practicum.ewm.dto.ewm_service.compilation.CompilationDto;
 import ru.practicum.ewm.dto.ewm_service.compilation.NewCompilationDto;
 import ru.practicum.ewm.dto.ewm_service.compilation.UpdateCompilationRequest;
-import ru.practicum.ewm.dto.exception.NotFoundException;
 import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.event.repository.EventRepository;
 
@@ -20,7 +20,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -31,6 +30,8 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
 
     private final CompilationMapper compilationMapper;
+
+    private final CompilationValidationHelper compilationValidationHelper;
 
     @Override
     @Transactional
@@ -73,15 +74,16 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto getCompilationById(Long compId) {
-        Compilation compilation = isCompilationPresent(compId);
+        Compilation compilation = compilationValidationHelper.isCompilationPresent(compId);
         CompilationDto compilationDto = compilationMapper.compilationToCompilationDto(compilation);
         log.info("Подборка событий с ID = {} возвращена", compilationDto.getId());
         return compilationDto;
     }
 
     @Override
+    @Transactional
     public void deleteCompilation(Long compId) {
-        isCompilationPresent(compId);
+        compilationValidationHelper.isCompilationPresent(compId);
         compilationRepository.deleteById(compId);
         log.info("Подборка событий с ID {} удалена.", compId);
     }
@@ -89,23 +91,12 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto updateCompilationById(Long compId, UpdateCompilationRequest updateCompilationRequest) {
-        Compilation compilation = isCompilationPresent(compId);
+        Compilation compilation = compilationValidationHelper.isCompilationPresent(compId);
         updateCompilation(updateCompilationRequest, compilation);
         Compilation returnedCompilation = compilationRepository.save(compilation);
         CompilationDto compilationDto = compilationMapper.compilationToCompilationDto(returnedCompilation);
         log.info("Подборка событий с ID {} изменена.", compilationDto.getId());
         return compilationDto;
-    }
-
-    private Compilation isCompilationPresent(Long compilationId) {
-        Optional<Compilation> optionalCompilation = compilationRepository.findById(compilationId);
-
-        if (optionalCompilation.isEmpty()) {
-            log.error("Подборка событий с ИД {} отсутствует в БД.", compilationId);
-            throw new NotFoundException(String.format("Подборка событий с ИД %d отсутствует в БД.", compilationId));
-        }
-
-        return optionalCompilation.get();
     }
 
     private void updateCompilation(UpdateCompilationRequest updateCompilationRequest,

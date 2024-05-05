@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.category.service.helper.CategoryValidationHelper;
 import ru.practicum.ewm.dto.ewm_service.category.CategoryDto;
 import ru.practicum.ewm.dto.ewm_service.category.NewCategoryDto;
-import ru.practicum.ewm.dto.exception.NotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -25,6 +24,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     private final CategoryMapper categoryMapper;
+
+    private final CategoryValidationHelper categoryValidationHelper;
 
     @Override
     @Transactional
@@ -37,8 +38,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void deleteCategory(long catId) {
-        isCategoryPresent(catId);
+        categoryValidationHelper.isCategoryPresent(catId);
         categoryRepository.deleteById(catId);
         log.info("Категория с ID {} удалена.", catId);
     }
@@ -46,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto updateCategory(long catId, CategoryDto categoryDto) {
-        Category category = isCategoryPresent(catId);
+        Category category = categoryValidationHelper.isCategoryPresent(catId);
         category.setName(categoryDto.getName());
         Category updatedCategory = categoryRepository.save(category);
         CategoryDto updatedCategoryDto = categoryMapper.categoryToCategoryDto(updatedCategory);
@@ -74,20 +76,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategoryById(long catId) {
-        Category returnedCategory = isCategoryPresent(catId);
+        Category returnedCategory = categoryValidationHelper.isCategoryPresent(catId);
         CategoryDto returnedCategoryDto = categoryMapper.categoryToCategoryDto(returnedCategory);
         log.info("Категория с ID = {} возвращена", returnedCategoryDto.getId());
         return returnedCategoryDto;
-    }
-
-    private Category isCategoryPresent(long catId) {
-        Optional<Category> optionalCategory = categoryRepository.findById(catId);
-
-        if (optionalCategory.isEmpty()) {
-            log.error("Категория с ИД {} отсутствует в БД.", catId);
-            throw new NotFoundException(String.format("Категория с ИД %d отсутствует в БД.", catId));
-        }
-
-        return optionalCategory.get();
     }
 }
