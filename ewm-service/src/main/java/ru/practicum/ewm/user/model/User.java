@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "users")
@@ -25,4 +26,6 @@ public class User {
     private Long id;
     private String email;
     private String name;
+    @Transient
+    private Double rating = 0.0;
 }

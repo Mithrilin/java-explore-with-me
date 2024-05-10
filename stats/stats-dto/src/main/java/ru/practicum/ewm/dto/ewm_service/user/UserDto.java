@@ -17,4 +17,5 @@ public class UserDto {
     private String email;
     @NotBlank(message = "Name не может быть пустым.")
     private String name;
+    private Double rating;
 }

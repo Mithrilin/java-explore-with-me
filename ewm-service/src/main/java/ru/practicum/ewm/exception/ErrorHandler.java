@@ -1,6 +1,7 @@
 package ru.practicum.ewm.exception;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class ErrorHandler extends ResponseEntityExceptionHandler {
 
@@ -39,6 +41,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now()
         );
+        log.error("Получен статус 400 BAD REQUEST. {}", ex.getMessage(), ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -51,6 +54,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 LocalDateTime.now()
         );
+        log.error("Получен статус 404 NOT FOUND. {}", ex.getMessage(), ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -63,6 +67,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.CONFLICT,
                 LocalDateTime.now()
         );
+        log.error("Получен статус 409 CONFLICT. {}", ex.getMessage(), ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -78,6 +83,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now()
         );
+        log.error("Получен статус 400 BAD REQUEST. {}", ex.getMessage(), ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
@@ -98,6 +104,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 LocalDateTime.now()
         );
+        log.error("Получен статус 400 BAD REQUEST. {}", ex.getMessage(), ex);
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 

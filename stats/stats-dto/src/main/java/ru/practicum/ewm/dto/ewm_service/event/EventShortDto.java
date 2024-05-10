@@ -29,4 +29,5 @@ public class EventShortDto {
     @NotBlank(message = "title не может быть пустым.")
     private String title;
     private Long views;
+    private Double rating;
 }

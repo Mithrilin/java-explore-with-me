@@ -42,7 +42,7 @@ public class EventPrivateController {
     public List<EventShortDto> getEventsByUserId(@PathVariable @Positive Long userId,
                                                  @RequestParam(defaultValue = "0") @Min(0) int from,
                                                  @RequestParam(defaultValue = "10") @Positive int size) {
-        return eventService.getEventByUserId(userId, from, size);
+        return eventService.getEventsByUserId(userId, from, size);
     }
 
     @PostMapping
