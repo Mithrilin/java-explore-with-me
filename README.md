@@ -67,4 +67,8 @@ API основного сервиса разделено на три части:
 ![Схема](ewm-db-schema.png)
 
 ### stats-db
-![Схема2](stats-db-schema.png)
+![Схема2](stats-db-schema.png)  
+
+
+#### Ссылка на Pull request  
+https://github.com/Mithrilin/java-explore-with-me/pull/3
